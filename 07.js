@@ -43,7 +43,7 @@ class Validator {
         this.rules.username.split('|').map(function(rule) {
             let username = this.data.username;
             if (rule == 'alphanum') {
-                var letters = /^[0-9a-zA-Z]+$/;
+                var letters = /^[0-9a-zA-Z]+$/gi;
                 if (!username.match(letters)) {
                     console.log(username);
                     fails = true;
@@ -57,21 +57,46 @@ class Validator {
         }.bind(this));
 
         this.rules.email.split('|').map(function(rule) {
-            let username = this.data.username;
+            let email = this.data.email;
             if (rule == 'email') {
                 var letters = /\S+@\S+\.\S+/;
-                if (!username.match(letters)) {
+                if (!email.match(letters)) {
                     fails = true;
                 }
             }
             if (rule == 'required') {
-                if (username.length <= 0) {
+                if (email.length <= 0) {
                     fails = true;
                 }
             }
         }.bind(this));
 
+        if (this.rules.name == 'required') {
+            if (this.data.name.length <= 0) {
+                fails = true;
+            }
+        }
 
+
+        this.rules.zip.split('|').map(function(rule) {
+            let zip = this.data.zip;
+            if (rule == 'numeric') {
+                if (typeof zip !== 'number') {
+                    fails = true;
+                }
+            }
+            if (rule == 'required') {
+                if (zip.length <= 0) {
+                    fails = true;
+                }
+            }
+        }.bind(this));
+
+        if (this.rules.is_admin == 'boolean') {
+            if (!typeof this.data.is_admin == 'boolean') {
+                fails = true;
+            }
+        }
 
         return console.log(fails);
     }
