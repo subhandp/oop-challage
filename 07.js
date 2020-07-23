@@ -1,10 +1,10 @@
 const data = {
-    username: 'mul14',
+    username: '',
     email: 'email@example.com',
-    name: 'Mulia',
+    name: 'Mulia#',
     zip: 75324,
     is_admin: true,
-    age: 28,
+    age: 22,
 }
 
 const rules = {
@@ -34,69 +34,69 @@ class Validator {
     constructor(data, rules, message) {
         this.data = data;
         this.rules = rules;
-        this.message = message
+        this.message = message;
+        this.errorsValid = [];
     }
-
+    errors() {
+        console.log(this.errorsValid);
+    }
     fails() {
         let fails = false;
         console.log(this.data.username.length);
-        this.rules.username.split('|').map(function(rule) {
-            let username = this.data.username;
-            if (rule == 'alphanum') {
-                var letters = /^[0-9a-zA-Z]+$/gi;
-                if (!username.match(letters)) {
-                    console.log(username);
-                    fails = true;
-                }
-            }
-            if (rule == 'required') {
-                if (username.length <= 0) {
-                    fails = true;
-                }
-            }
-        }.bind(this));
+        for (const key in this.rules) {
+            if (this.rules.hasOwnProperty(key)) {
+                const myRules = this.rules[key];
+                const data = this.data[key]
+                myRules.split('|').map(function(rule) {
+                    if (rule == 'required') {
+                        if (data.length <= 0) {
+                            fails = true;
+                            this.errorsValid.push(rule + ' ' + key);
 
-        this.rules.email.split('|').map(function(rule) {
-            let email = this.data.email;
-            if (rule == 'email') {
-                var letters = /\S+@\S+\.\S+/;
-                if (!email.match(letters)) {
-                    fails = true;
-                }
-            }
-            if (rule == 'required') {
-                if (email.length <= 0) {
-                    fails = true;
-                }
-            }
-        }.bind(this));
+                        }
+                    }
+                    if (rule == 'alphanum') {
+                        var letters = /^[0-9a-zA-Z]+$/gi;
+                        if (!data.match(letters)) {
+                            console.log(data);
+                            fails = true;
+                            this.errorsValid.push(rule + ' ' + key);
+                        }
+                    }
 
-        if (this.rules.name == 'required') {
-            if (this.data.name.length <= 0) {
-                fails = true;
+                    if (rule == 'email') {
+                        var letters = /\S+@\S+\.\S+/;
+                        if (!data.match(letters)) {
+                            fails = true;
+                            this.errorsValid.push(rule + ' ' + key);
+                        }
+                    }
+
+                    if (rule == 'numeric') {
+                        if (typeof data !== 'number') {
+                            fails = true;
+                            this.errorsValid.push(rule + ' ' + key);
+                        }
+                    }
+
+                    if (rule == 'boolean') {
+                        if (!typeof data == 'boolean') {
+                            fails = true;
+                            this.errorsValid.push(rule + ' ' + key);
+                        }
+                    }
+
+                    if (rule.split(':')[0] === 'min' && typeof parseInt(rule.split(':')[1]) === 'number') {
+                        if (data > parseInt(rule.split(':')[1])) {
+                            fails = true;
+                            this.errorsValid.push(rule + ' ' + key);
+                        }
+                    }
+
+                }.bind(this));
             }
         }
 
-
-        this.rules.zip.split('|').map(function(rule) {
-            let zip = this.data.zip;
-            if (rule == 'numeric') {
-                if (typeof zip !== 'number') {
-                    fails = true;
-                }
-            }
-            if (rule == 'required') {
-                if (zip.length <= 0) {
-                    fails = true;
-                }
-            }
-        }.bind(this));
-
-        if (this.rules.is_admin == 'boolean') {
-            if (!typeof this.data.is_admin == 'boolean') {
-                fails = true;
-            }
-        }
 
         return console.log(fails);
     }
@@ -104,4 +104,5 @@ class Validator {
 
 const validator = new Validator(data, rules, message)
 
-validator.fails() // If data contain not valid field, will return true.
+validator.fails()
+validator.errors()
