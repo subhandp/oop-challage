@@ -16,19 +16,12 @@ const rules = {
     age: 'numeric|min:21',
 }
 
-// // The message is optional. But user should be able to customize the messages.
 const message = {
     required: 'The %s field is required.', // Message will be "The username field is required."
     age: 'The %s field must a number.', // The age field must a number.
 }
 
-// const validator = new Validator(data, rules, message)
 
-// validator.fails() // If data contain not valid field, will return true.
-
-// validator.passes() // If all data valid, will return true.
-
-// validator.errors() // Show all error fields with error message.
 
 class Validator {
     constructor(data, rules, message) {
@@ -39,10 +32,10 @@ class Validator {
     }
     errors() {
         console.log(this.errorsValid);
+        // if(typeof this.message !== undefined){}
     }
     fails() {
         let fails = false;
-        console.log(this.data.username.length);
         for (const key in this.rules) {
             if (this.rules.hasOwnProperty(key)) {
                 const myRules = this.rules[key];
@@ -89,7 +82,7 @@ class Validator {
                     if (rule.split(':')[0] === 'min' && typeof parseInt(rule.split(':')[1]) === 'number') {
                         if (data > parseInt(rule.split(':')[1])) {
                             fails = true;
-                            this.errorsValid.push(rule + ' ' + key);
+                            this.errorsValid.push(rule.split(':')[0] + ' ' + key);
                         }
                     }
 
