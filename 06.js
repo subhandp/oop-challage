@@ -1,13 +1,6 @@
 const Datastore = require('nedb'),
     db = new Datastore({ filename: 'user', autoload: true });
 
-db.find({ username: 'subhandpz', password: 'abcde' }, function(err, docs) {
-    // docs is an array containing documents Mars, Earth, Jupiter
-    // If no document is found, docs is equal to []
-    console.log(docs.length);
-});
-
-
 class Auth {
     constructor() {
         this.userLoginId = null;
